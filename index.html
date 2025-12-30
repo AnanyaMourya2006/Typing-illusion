@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Typing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Typing Illusion</title>
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: #0b0b0b;
-      color: #e5e5e5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: "Courier New", monospace;
-    }
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 1.5s ease;
+  }
 
-    .container {
-      width: 80%;
-      max-width: 700px;
-      font-size: 1.4rem;
-      line-height: 1.8;
-    }
+  .container {
+    width: 80%;
+    max-width: 720px;
+    font-size: 1.4rem;
+    line-height: 1.9;
+    transition: font-family 1s ease, color 1s ease;
+  }
 
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      background: #e5e5e5;
-      margin-left: 4px;
-      animation: blink 1s steps(1) infinite;
-    }
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1.2em;
+    background: currentColor;
+    margin-left: 4px;
+    animation: blink 1s steps(1) infinite;
+  }
 
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-  </style>
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+</style>
 </head>
 
 <body>
@@ -43,48 +43,136 @@
     <span id="text"></span><span class="cursor"></span>
   </div>
 
-  <script>
-    const lines = [
+<script>
+/* ---------- SCENES ---------- */
+
+const scenes = [
+  {
+    background: "#0b0b0b",
+    color: "#e5e5e5",
+    font: "'Courier New', monospace",
+    typeSpeed: 90,
+    deleteSpeed: 50,
+    pause: 1200,
+    lines: [
       "I think I—",
       "no.",
-      "I thought I was okay.",
-      "Wait.",
       "Let me try that again.",
       "",
       "I think I miss you."
-    ];
+    ]
+  },
+  {
+    background: "linear-gradient(120deg, #0f172a, #020617)",
+    color: "#dbeafe",
+    font: "'Georgia', serif",
+    typeSpeed: 120,
+    deleteSpeed: 0, // no deleting
+    pause: 1600,
+    lines: [
+      "Some thoughts arrive quietly.",
+      "They don’t ask permission.",
+      "",
+      "They just stay."
+    ]
+  },
+  {
+    background: "radial-gradient(circle at top, #1f2933, #050608)",
+    color: "#f1f5f9",
+    font: "'IBM Plex Mono', monospace",
+    typeSpeed: 70,
+    deleteSpeed: 70,
+    pause: 800,
+    lines: [
+      "Draft saved.",
+      "Draft deleted.",
+      "Draft saved again."
+    ]
+  },
+  {
+    background: "#fafafa",
+    color: "#111",
+    font: "'Times New Roman', serif",
+    typeSpeed: 150,
+    deleteSpeed: 80,
+    pause: 1000,
+    lines: [
+      "This looked better in my head.",
+      "Actually—",
+      "maybe not."
+    ]
+  }
+];
 
-    const textEl = document.getElementById("text");
+/* ---------- ENGINE ---------- */
 
-    let lineIndex = 0;
-    let charIndex = 0;
-    let deleting = false;
+const textEl = document.getElementById("text");
+const container = document.querySelector(".container");
 
-    function type() {
-      const currentLine = lines[lineIndex];
+let sceneIndex = 0;
+let lineIndex = 0;
+let charIndex = 0;
+let deleting = false;
 
-      if (!deleting) {
-        textEl.textContent += currentLine.charAt(charIndex);
-        charIndex++;
+function loadScene(scene) {
+  document.body.style.background = scene.background;
+  container.style.color = scene.color;
+  container.style.fontFamily = scene.font;
+  textEl.textContent = "";
 
-        if (charIndex === currentLine.length) {
-          setTimeout(() => deleting = true, 1200);
-        }
+  lineIndex = 0;
+  charIndex = 0;
+  deleting = false;
+}
+
+function typeScene() {
+  const scene = scenes[sceneIndex];
+  const line = scene.lines[lineIndex];
+
+  if (!deleting) {
+    textEl.textContent += line.charAt(charIndex);
+    charIndex++;
+
+    if (charIndex === line.length) {
+      if (scene.deleteSpeed > 0) {
+        setTimeout(() => deleting = true, scene.pause);
       } else {
-        textEl.textContent = textEl.textContent.slice(0, -1);
-        charIndex--;
-
-        if (charIndex === 0) {
-          deleting = false;
-          lineIndex = (lineIndex + 1) % lines.length;
-        }
+        setTimeout(nextLine, scene.pause);
       }
-
-      const speed = deleting ? 40 : 70;
-      setTimeout(type, speed);
     }
+  } else {
+    textEl.textContent = textEl.textContent.slice(0, -1);
+    charIndex--;
 
-    type();
-  </script>
+    if (charIndex === 0) {
+      deleting = false;
+      nextLine();
+    }
+  }
+
+  const speed = deleting
+    ? scene.deleteSpeed
+    : scene.typeSpeed;
+
+  setTimeout(typeScene, speed);
+}
+
+function nextLine() {
+  lineIndex++;
+  charIndex = 0;
+
+  if (lineIndex >= scenes[sceneIndex].lines.length) {
+    setTimeout(nextScene, 1500);
+  }
+}
+
+function nextScene() {
+  sceneIndex = (sceneIndex + 1) % scenes.length;
+  loadScene(scenes[sceneIndex]);
+}
+
+loadScene(scenes[0]);
+typeScene();
+</script>
 </body>
 </html>
