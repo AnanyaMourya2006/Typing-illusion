@@ -11,46 +11,47 @@
   body {
     margin: 0;
     height: 100vh;
-    background: #050505;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                 "Helvetica Neue", Arial, monospace;
+    font-family: -apple-system, BlinkMacSystemFont,
+      "SF Pro Text", "Helvetica Neue", Arial, monospace;
   }
 
-  /* 📱 Phone frame (Reel ratio) */
+  /* 📱 Screen area (9:16) */
   .phone {
     width: 360px;
     height: 640px;
-    background: #0b0b0b;
-    color: #eaeaea;
+    background: #0e0e10; /* OLED dark */
+    color: #e5e7eb;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 0 45px rgba(255,255,255,0.04);
   }
 
-  /* 🔋 Status bar */
+  /* Status bar */
   .status {
-    height: 28px;
-    padding: 0 14px;
+    height: 32px;
+    padding: 0 16px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    font-size: 12px;
-    color: #cfcfcf;
-    opacity: 0.85;
+    align-items: center;
+    font-size: 13px;
+    color: #9ca3af;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
   }
 
   .icons {
     display: flex;
-    gap: 6px;
     align-items: center;
+    gap: 6px;
   }
 
   .battery {
     width: 22px;
     height: 10px;
-    border: 1px solid #cfcfcf;
+    border: 1px solid #9ca3af;
     position: relative;
   }
 
@@ -61,18 +62,18 @@
     top: 2px;
     width: 2px;
     height: 6px;
-    background: #cfcfcf;
+    background: #9ca3af;
   }
 
   .battery-level {
-    width: 70%;
+    width: 68%;
     height: 100%;
-    background: #cfcfcf;
+    background: #9ca3af;
   }
 
-  /* 📝 Typing area */
+  /* Typing area */
   .content {
-    padding: 40px 24px;
+    padding: 42px 24px;
     font-size: 18px;
     line-height: 1.7;
     white-space: pre-wrap;
@@ -82,8 +83,8 @@
     display: inline-block;
     width: 8px;
     height: 1em;
-    background: #eaeaea;
-    margin-left: 4px;
+    background: currentColor;
+    margin-left: 3px;
     animation: blink 1s steps(1) infinite;
   }
 
@@ -91,12 +92,13 @@
     50% { opacity: 0; }
   }
 
-  /* subtle grain */
+  /* Very subtle grain */
   .phone::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
     pointer-events: none;
   }
 </style>
@@ -116,7 +118,7 @@
     </div>
   </div>
 
-  <!-- Typing -->
+  <!-- Typing content -->
   <div class="content">
     <span id="text"></span><span class="cursor"></span>
   </div>
@@ -124,7 +126,7 @@
 </div>
 
 <script>
-/* ⌨️ Messages */
+/* Messages */
 const lines = [
   "i opened this just to write something.",
   "then i stared at the screen.",
@@ -140,7 +142,7 @@ let line = 0;
 let char = 0;
 let deleting = false;
 
-/* Typing engine */
+/* Typing logic */
 function type() {
   const current = lines[line];
 
@@ -167,7 +169,7 @@ function type() {
 
 type();
 
-/* ⏰ Fake time updater */
+/* Time updater */
 function updateTime() {
   const now = new Date();
   const h = String(now.getHours()).padStart(2, "0");
