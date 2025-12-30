@@ -1,183 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Draft</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub - Repository</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --cursor-color: #58a6ff;
+            --comment-color: #8b949e;
+            --keyword-color: #ff7b72;
+        }
 
-<style>
-  * { box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
 
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: -apple-system, BlinkMacSystemFont,
-      "SF Pro Text", "Helvetica Neue", Arial, monospace;
-  }
+        #code-container {
+            width: 80%;
+            max-width: 600px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
 
-  /* 📱 Screen area (9:16) */
-  .phone {
-    width: 360px;
-    height: 640px;
-    background: #0e0e10; /* OLED dark */
-    color: #e5e7eb;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 45px rgba(255,255,255,0.04);
-  }
+        .keyword { color: var(--keyword-color); }
+        .comment { color: var(--comment-color); }
+        
+        #typing-text {
+            white-space: pre-wrap;
+        }
 
-  /* Status bar */
-  .status {
-    height: 32px;
-    padding: 0 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    color: #9ca3af;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
+        /* The blinking cursor effect */
+        #cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2rem;
+            background-color: var(--cursor-color);
+            margin-left: 5px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
 
-  .icons {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .battery {
-    width: 22px;
-    height: 10px;
-    border: 1px solid #9ca3af;
-    position: relative;
-  }
-
-  .battery::after {
-    content: "";
-    position: absolute;
-    right: -3px;
-    top: 2px;
-    width: 2px;
-    height: 6px;
-    background: #9ca3af;
-  }
-
-  .battery-level {
-    width: 68%;
-    height: 100%;
-    background: #9ca3af;
-  }
-
-  /* Typing area */
-  .content {
-    padding: 42px 24px;
-    font-size: 18px;
-    line-height: 1.7;
-    white-space: pre-wrap;
-  }
-
-  .cursor {
-    display: inline-block;
-    width: 8px;
-    height: 1em;
-    background: currentColor;
-    margin-left: 3px;
-    animation: blink 1s steps(1) infinite;
-  }
-
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-
-  /* Very subtle grain */
-  .phone::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-</style>
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
 </head>
-
 <body>
-<div class="phone">
 
-  <!-- Status bar -->
-  <div class="status">
-    <div id="time">02:41</div>
-    <div class="icons">
-      <span>●●●</span>
-      <div class="battery">
-        <div class="battery-level"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Typing content -->
-  <div class="content">
-    <span id="text"></span><span class="cursor"></span>
-  </div>
-
+<div id="code-container">
+    <span class="comment">// Connection lost...</span><br>
+    <span class="keyword">function</span> <span style="color: #d2a8ff;">processHeart()</span> {<br>
+    &nbsp;&nbsp;<span id="typing-text"></span><span id="cursor"></span><br>
+    }
 </div>
 
 <script>
-/* Messages */
-const lines = [
-  "i opened this just to write something.",
-  "then i stared at the screen.",
-  "",
-  "deleted it.",
-  "typed again.",
-  "",
-  "i miss you."
-];
+    const textElement = document.getElementById('typing-text');
+    // EDIT YOUR MESSAGE HERE:
+    const message = `if (you == "gone") {
+    return "searching for pieces...";
+} else {
+    // maybe in another commit.
+    wait();
+}`;
 
-const textEl = document.getElementById("text");
-let line = 0;
-let char = 0;
-let deleting = false;
+    let index = 0;
 
-/* Typing logic */
-function type() {
-  const current = lines[line];
-
-  if (!deleting) {
-    textEl.textContent += current.charAt(char);
-    char++;
-
-    if (char === current.length) {
-      setTimeout(() => deleting = true, 1200);
+    function type() {
+        if (index < message.length) {
+            textElement.textContent += message.charAt(index);
+            index++;
+            // Adjust speed here (higher = slower)
+            setTimeout(type, 80); 
+        }
     }
-  } else {
-    textEl.textContent = textEl.textContent.slice(0, -1);
-    char--;
 
-    if (char === 0) {
-      deleting = false;
-      line++;
-      if (line >= lines.length) return; // stop at "i miss you"
-    }
-  }
-
-  setTimeout(type, deleting ? 40 : 80);
-}
-
-type();
-
-/* Time updater */
-function updateTime() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, "0");
-  const m = String(now.getMinutes()).padStart(2, "0");
-  document.getElementById("time").textContent = `${h}:${m}`;
-}
-updateTime();
-setInterval(updateTime, 60000);
+    // Start typing after a short delay
+    setTimeout(type, 1000);
 </script>
 
 </body>
