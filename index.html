@@ -3,31 +3,86 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Typing Illusion</title>
+<title>Draft</title>
 
 <style>
+  * { box-sizing: border-box; }
+
   body {
     margin: 0;
     height: 100vh;
+    background: #050505;
     display: flex;
-    align-items: center;
     justify-content: center;
-    transition: background 1.5s ease;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                 "Helvetica Neue", Arial, monospace;
   }
 
-  .container {
-    width: 80%;
-    max-width: 720px;
-    font-size: 1.4rem;
-    line-height: 1.9;
-    transition: font-family 1s ease, color 1s ease;
+  /* 📱 Phone frame (Reel ratio) */
+  .phone {
+    width: 360px;
+    height: 640px;
+    background: #0b0b0b;
+    color: #eaeaea;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 🔋 Status bar */
+  .status {
+    height: 28px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #cfcfcf;
+    opacity: 0.85;
+  }
+
+  .icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .battery {
+    width: 22px;
+    height: 10px;
+    border: 1px solid #cfcfcf;
+    position: relative;
+  }
+
+  .battery::after {
+    content: "";
+    position: absolute;
+    right: -3px;
+    top: 2px;
+    width: 2px;
+    height: 6px;
+    background: #cfcfcf;
+  }
+
+  .battery-level {
+    width: 70%;
+    height: 100%;
+    background: #cfcfcf;
+  }
+
+  /* 📝 Typing area */
+  .content {
+    padding: 40px 24px;
+    font-size: 18px;
+    line-height: 1.7;
+    white-space: pre-wrap;
   }
 
   .cursor {
     display: inline-block;
-    width: 10px;
-    height: 1.2em;
-    background: currentColor;
+    width: 8px;
+    height: 1em;
+    background: #eaeaea;
     margin-left: 4px;
     animation: blink 1s steps(1) infinite;
   }
@@ -35,144 +90,93 @@
   @keyframes blink {
     50% { opacity: 0; }
   }
+
+  /* subtle grain */
+  .phone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
 </style>
 </head>
 
 <body>
-  <div class="container">
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status">
+    <div id="time">02:41</div>
+    <div class="icons">
+      <span>●●●</span>
+      <div class="battery">
+        <div class="battery-level"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typing -->
+  <div class="content">
     <span id="text"></span><span class="cursor"></span>
   </div>
 
-<script>
-/* ---------- SCENES ---------- */
+</div>
 
-const scenes = [
-  {
-    background: "#0b0b0b",
-    color: "#e5e5e5",
-    font: "'Courier New', monospace",
-    typeSpeed: 90,
-    deleteSpeed: 50,
-    pause: 1200,
-    lines: [
-      "I think I—",
-      "no.",
-      "Let me try that again.",
-      "",
-      "I think I miss you."
-    ]
-  },
-  {
-    background: "linear-gradient(120deg, #0f172a, #020617)",
-    color: "#dbeafe",
-    font: "'Georgia', serif",
-    typeSpeed: 120,
-    deleteSpeed: 0, // no deleting
-    pause: 1600,
-    lines: [
-      "Some thoughts arrive quietly.",
-      "They don’t ask permission.",
-      "",
-      "They just stay."
-    ]
-  },
-  {
-    background: "radial-gradient(circle at top, #1f2933, #050608)",
-    color: "#f1f5f9",
-    font: "'IBM Plex Mono', monospace",
-    typeSpeed: 70,
-    deleteSpeed: 70,
-    pause: 800,
-    lines: [
-      "Draft saved.",
-      "Draft deleted.",
-      "Draft saved again."
-    ]
-  },
-  {
-    background: "#fafafa",
-    color: "#111",
-    font: "'Times New Roman', serif",
-    typeSpeed: 150,
-    deleteSpeed: 80,
-    pause: 1000,
-    lines: [
-      "This looked better in my head.",
-      "Actually—",
-      "maybe not."
-    ]
-  }
+<script>
+/* ⌨️ Messages */
+const lines = [
+  "i opened this just to write something.",
+  "then i stared at the screen.",
+  "",
+  "deleted it.",
+  "typed again.",
+  "",
+  "i miss you."
 ];
 
-/* ---------- ENGINE ---------- */
-
 const textEl = document.getElementById("text");
-const container = document.querySelector(".container");
-
-let sceneIndex = 0;
-let lineIndex = 0;
-let charIndex = 0;
+let line = 0;
+let char = 0;
 let deleting = false;
 
-function loadScene(scene) {
-  document.body.style.background = scene.background;
-  container.style.color = scene.color;
-  container.style.fontFamily = scene.font;
-  textEl.textContent = "";
-
-  lineIndex = 0;
-  charIndex = 0;
-  deleting = false;
-}
-
-function typeScene() {
-  const scene = scenes[sceneIndex];
-  const line = scene.lines[lineIndex];
+/* Typing engine */
+function type() {
+  const current = lines[line];
 
   if (!deleting) {
-    textEl.textContent += line.charAt(charIndex);
-    charIndex++;
+    textEl.textContent += current.charAt(char);
+    char++;
 
-    if (charIndex === line.length) {
-      if (scene.deleteSpeed > 0) {
-        setTimeout(() => deleting = true, scene.pause);
-      } else {
-        setTimeout(nextLine, scene.pause);
-      }
+    if (char === current.length) {
+      setTimeout(() => deleting = true, 1200);
     }
   } else {
     textEl.textContent = textEl.textContent.slice(0, -1);
-    charIndex--;
+    char--;
 
-    if (charIndex === 0) {
+    if (char === 0) {
       deleting = false;
-      nextLine();
+      line++;
+      if (line >= lines.length) return; // stop at "i miss you"
     }
   }
 
-  const speed = deleting
-    ? scene.deleteSpeed
-    : scene.typeSpeed;
-
-  setTimeout(typeScene, speed);
+  setTimeout(type, deleting ? 40 : 80);
 }
 
-function nextLine() {
-  lineIndex++;
-  charIndex = 0;
+type();
 
-  if (lineIndex >= scenes[sceneIndex].lines.length) {
-    setTimeout(nextScene, 1500);
-  }
+/* ⏰ Fake time updater */
+function updateTime() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, "0");
+  const m = String(now.getMinutes()).padStart(2, "0");
+  document.getElementById("time").textContent = `${h}:${m}`;
 }
-
-function nextScene() {
-  sceneIndex = (sceneIndex + 1) % scenes.length;
-  loadScene(scenes[sceneIndex]);
-}
-
-loadScene(scenes[0]);
-typeScene();
+updateTime();
+setInterval(updateTime, 60000);
 </script>
+
 </body>
 </html>
