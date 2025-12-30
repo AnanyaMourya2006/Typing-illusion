@@ -1,93 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub - Repository</title>
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --text-color: #c9d1d9;
-            --cursor-color: #58a6ff;
-            --comment-color: #8b949e;
-            --keyword-color: #ff7b72;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        #code-container {
-            width: 80%;
-            max-width: 600px;
-            font-size: 1.2rem;
-            line-height: 1.6;
-        }
-
-        .keyword { color: var(--keyword-color); }
-        .comment { color: var(--comment-color); }
+        body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; display: flex; justify-content: center; padding-top: 50px; }
         
-        #typing-text {
-            white-space: pre-wrap;
+        /* The GitHub File Box */
+        .file-container {
+            width: 90%; max-width: 800px;
+            border: 1px solid #30363d; border-radius: 6px;
+            background-color: #0d1117; overflow: hidden;
         }
 
-        /* The blinking cursor effect */
-        #cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1.2rem;
-            background-color: var(--cursor-color);
-            margin-left: 5px;
-            animation: blink 1s infinite;
-            vertical-align: middle;
+        /* File Header */
+        .file-header {
+            background-color: #161b22; padding: 10px 16px;
+            border-bottom: 1px solid #30363d; font-size: 14px;
+            display: flex; align-items: center; color: #58a6ff; font-weight: 600;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        /* Code Area */
+        .code-area {
+            display: flex; padding: 16px 0; font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+            font-size: 13px; line-height: 20px;
         }
+
+        .line-numbers {
+            color: #484f58; text-align: right; width: 40px;
+            padding-right: 15px; user-select: none;
+        }
+
+        .code-content { color: #e6edf3; }
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .cursor { width: 2px; height: 15px; background: #58a6ff; display: inline-block; vertical-align: middle; animation: blink 1s infinite; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-<div id="code-container">
-    <span class="comment">// Connection lost...</span><br>
-    <span class="keyword">function</span> <span style="color: #d2a8ff;">processHeart()</span> {<br>
-    &nbsp;&nbsp;<span id="typing-text"></span><span id="cursor"></span><br>
-    }
+<div class="file-container">
+    <div class="file-header">
+        heart_logs.js
+    </div>
+    <div class="code-area">
+        <div class="line-numbers">
+            1<br>2<br>3<br>4<br>5<br>6<br>7
+        </div>
+        <div class="code-content">
+            <span class="keyword">const</span> feelings = {<br>
+            &nbsp;&nbsp;status: <span id="typing"></span><span class="cursor"></span><br>
+            };
+        </div>
+    </div>
 </div>
 
 <script>
-    const textElement = document.getElementById('typing-text');
-    // EDIT YOUR MESSAGE HERE:
-    const message = `if (you == "gone") {
-    return "searching for pieces...";
-} else {
-    // maybe in another commit.
-    wait();
-}`;
+    const target = document.getElementById('typing');
+    const text = '"disconnected",\n  message: "waiting for a push...",\n  lastSeen: "11:11 PM"';
+    let i = 0;
 
-    let index = 0;
-
-    function type() {
-        if (index < message.length) {
-            textElement.textContent += message.charAt(index);
-            index++;
-            // Adjust speed here (higher = slower)
-            setTimeout(type, 80); 
+    function typeEffect() {
+        if (i < text.length) {
+            target.innerText += text.charAt(i);
+            i++;
+            setTimeout(typeEffect, 60);
         }
     }
-
-    // Start typing after a short delay
-    setTimeout(type, 1000);
+    setTimeout(typeEffect, 1000);
 </script>
 
 </body>
