@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Typing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #0b0b0b;
+      color: #e5e5e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Courier New", monospace;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 700px;
+      font-size: 1.4rem;
+      line-height: 1.8;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background: #e5e5e5;
+      margin-left: 4px;
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span id="text"></span><span class="cursor"></span>
+  </div>
+
+  <script>
+    const lines = [
+      "I think I—",
+      "no.",
+      "I thought I was okay.",
+      "Wait.",
+      "Let me try that again.",
+      "",
+      "I think I miss you."
+    ];
+
+    const textEl = document.getElementById("text");
+
+    let lineIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    function type() {
+      const currentLine = lines[lineIndex];
+
+      if (!deleting) {
+        textEl.textContent += currentLine.charAt(charIndex);
+        charIndex++;
+
+        if (charIndex === currentLine.length) {
+          setTimeout(() => deleting = true, 1200);
+        }
+      } else {
+        textEl.textContent = textEl.textContent.slice(0, -1);
+        charIndex--;
+
+        if (charIndex === 0) {
+          deleting = false;
+          lineIndex = (lineIndex + 1) % lines.length;
+        }
+      }
+
+      const speed = deleting ? 40 : 70;
+      setTimeout(type, speed);
+    }
+
+    type();
+  </script>
+</body>
+</html>
