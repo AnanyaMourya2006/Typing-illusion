@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Inter:wght@300;400&display=swap');
+
+body {
+  margin: 0;
+  background: #f3eefb;
+  color: #3b2f4a;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* CENTER */
+.center {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* TEXT */
+.soft {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.25rem;
+  line-height: 1.9;
+  max-width: 420px;
+}
+
+/* GLOW */
+.glow {
+  text-shadow: 0 0 8px #cbbcff;
+}
+
+/* BREATHING */
+@keyframes breathe {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(3px); }
+  100% { transform: translateY(0px); }
+}
+
+.breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* MOON LINE */
+.moon-line {
+  margin: 20px 0;
+  font-size: 1.2rem;
+  animation: moonFloat 4s ease-in-out infinite;
+}
+
+@keyframes moonFloat {
+  50% { transform: translateY(4px); }
+}
+
+/* ENTER */
+.enter {
+  text-decoration: none;
+  color: #6b5fa7;
+  font-size: 0.9rem;
+}
+
+.enter:hover {
+  color: #3b2f4a;
+}
+
+/* STARS BACKGROUND */
+.stars span {
+  position: absolute;
+  color: white;
+  opacity: 0.8;
+  animation: twinkle 5s infinite ease-in-out;
+}
+
+.stars span:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.stars span:nth-child(2) { top: 30%; left: 70%; animation-delay: 1s; }
+.stars span:nth-child(3) { top: 60%; left: 40%; animation-delay: 2s; }
+.stars span:nth-child(4) { top: 80%; left: 80%; animation-delay: 3s; }
+.stars span:nth-child(5) { top: 50%; left: 10%; animation-delay: 4s; }
+
+@keyframes twinkle {
+  0%,100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* SYMBOLS FLOAT */
+.symbols span {
+  position: absolute;
+  font-size: 1.2rem;
+  opacity: 0.6;
+  animation: float 7s infinite ease-in-out;
+}
+
+.symbols span:nth-child(1) { top: 20%; left: 15%; }
+.symbols span:nth-child(2) { top: 70%; left: 80%; animation-delay: 2s; }
+.symbols span:nth-child(3) { top: 40%; left: 50%; animation-delay: 4s; }
+
+@keyframes float {
+  50% { transform: translateY(-10px); }
+}
+
+/* READ PAGE */
+.page {
+  padding: 80px 20px;
+  max-width: 520px;
+  margin: auto;
+}
+
+/* FADE TEXT */
+.fade {
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+  margin-bottom: 60px;
+}
+
+.delay1 { animation-delay: 1s; }
+.delay2 { animation-delay: 2.5s; }
+.delay3 { animation-delay: 4s; }
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* SLOW STAY */
+.slow {
+  animation: breathe 10s ease-in-out infinite;
+}
