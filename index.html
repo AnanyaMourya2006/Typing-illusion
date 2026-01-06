@@ -1,216 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HD Cinematic Chat</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
-
-        :root {
-            --bg: #050303;
-            --purple: #bf5af2;
-            --text-main: #f5f5f7;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Playfair Display', serif;
-            overflow: hidden;
-        }
-
-        /* The canvas takes up most of the screen for maximum quality */
-        #recording-canvas {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            background: radial-gradient(circle at center, #12081a 0%, #050303 100%);
-        }
-
-        .chat-container {
-            width: 80%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            gap: 40px; /* Big gaps for cinematic feel */
-        }
-
-        /* Large, Poetic Message Style */
-        .msg {
-            font-size: 32px; /* Large for high readability */
-            line-height: 1.4;
-            opacity: 0;
-            filter: blur(10px);
-            transform: translateY(20px);
-            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .msg.visible {
-            opacity: 1;
-            filter: blur(0);
-            transform: translateY(0);
-        }
-
-        .them {
-            align-self: flex-start;
-            text-align: left;
-            color: var(--text-main);
-            max-width: 90%;
-        }
-
-        .me {
-            align-self: flex-end;
-            text-align: right;
-            color: var(--purple);
-            font-style: italic;
-            max-width: 90%;
-            text-shadow: 0 0 15px rgba(191, 90, 242, 0.3);
-        }
-
-        .unsent {
-            align-self: flex-start;
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin: 10px 0;
-        }
-
-        /* Header Heart */
-        .heart-header {
-            position: absolute;
-            top: 10%;
-            font-size: 40px;
-            filter: drop-shadow(0 0 10px var(--purple));
-            opacity: 0.6;
-            animation: breathe 4s infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.4; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        /* UI Overlay */
-        .controls {
-            position: fixed;
-            bottom: 30px;
-            display: flex;
-            gap: 15px;
-            z-index: 100;
-        }
-
-        .btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: sans-serif;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn:hover { background: rgba(255, 255, 255, 0.2); }
-    </style>
+  <meta charset="UTF-8">
+  <title>for people like us</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="recording-canvas">
-    <div class="heart-header">💜</div>
-    <div class="chat-container" id="chat-container">
-        </div>
+<div class="stars">
+  <span>✦</span>
+  <span>✧</span>
+  <span>✨</span>
+  <span>✦</span>
+  <span>✧</span>
 </div>
 
-<div class="controls">
-    <button class="btn" onclick="preview()">Preview</button>
-    <button class="btn" style="background: var(--purple);" onclick="startRecording()">Record HD</button>
-</div>
+<main class="center">
+  <p class="soft breathe glow">
+    this space is for people<br>
+    who feel deeply<br>
+    but speak carefully.
+  </p>
 
-<script>
-    const chatContainer = document.getElementById('chat-container');
-    
-    const dialogue = [
-        { type: 'them', text: "Do you ever go back to that bridge?" },
-        { type: 'me', text: "Only in my dreams." },
-        { type: 'them', text: "I left a piece of me there." },
-        { type: 'unsent', text: "And I never found it." },
-        { type: 'them', text: "I hope you're happy, truly. 💜" }
-    ];
+  <div class="moon-line">☾</div>
 
-    async function displayMessages() {
-        chatContainer.innerHTML = "";
-        for (const line of dialogue) {
-            await new Promise(r => setTimeout(r, 1800)); // Cinematic pacing
-
-            const div = document.createElement('div');
-            if (line.type === 'unsent') {
-                div.className = 'unsent visible';
-                div.innerText = "— Message Unsent —";
-            } else {
-                div.className = `msg ${line.type}`;
-                div.innerText = line.text;
-                chatContainer.appendChild(div);
-                // Trigger animation
-                setTimeout(() => div.classList.add('visible'), 50);
-            }
-            
-            // If the chat gets too long, remove the first message to keep it centered
-            if (chatContainer.children.length > 4) {
-                chatContainer.children[0].style.opacity = "0";
-                setTimeout(() => chatContainer.children[0].remove(), 1000);
-            }
-        }
-    }
-
-    function preview() {
-        displayMessages();
-    }
-
-    async function startRecording() {
-        try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({
-                video: { frameRate: 60, displaySurface: 'browser' }
-            });
-
-            const recorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm;codecs=vp9',
-                bitsPerSecond: 20000000 // Ultra HD 20Mbps
-            });
-
-            const chunks = [];
-            recorder.ondataavailable = e => chunks.push(e.data);
-            recorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Nostalgic_Wide_HD.webm';
-                a.click();
-                stream.getTracks().forEach(t => t.stop());
-            };
-
-            recorder.start();
-            await displayMessages();
-            await new Promise(r => setTimeout(r, 3000));
-            recorder.stop();
-        } catch (e) {
-            console.error(e);
-        }
-    }
-</script>
+  <a href="read.html" class="enter">enter</a>
+</main>
 
 </body>
 </html>
