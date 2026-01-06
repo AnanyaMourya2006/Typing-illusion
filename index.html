@@ -1,31 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>for people like us</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>soft thoughts</title>
+
+<style>
+/* ---------- BASE ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  height: 400vh;
+  background: linear-gradient(180deg, #e6d9ff, #f3e8ff, #ede4ff);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ---------- CUSTOM CURSOR ---------- */
+.cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #cdb4ff, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
+
+/* ---------- THOUGHT SECTIONS ---------- */
+.section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thought {
+  font-size: 3rem;
+  color: #5e548e;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1.2s ease;
+  text-align: center;
+  max-width: 70%;
+}
+
+/* active state */
+.thought.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- FLOATING STARS ---------- */
+.star {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: float 6s infinite ease-in-out;
+  opacity: 0.6;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+  100% { transform: translateY(0); }
+}
+</style>
 </head>
+
 <body>
 
-<div class="stars">
-  <span>✦</span>
-  <span>✧</span>
-  <span>✨</span>
-  <span>✦</span>
-  <span>✧</span>
+<div class="cursor"></div>
+
+<div class="section">
+  <div class="thought">sometimes i don’t want answers</div>
 </div>
 
-<main class="center">
-  <p class="soft breathe glow">
-    this space is for people<br>
-    who feel deeply<br>
-    but speak carefully.
-  </p>
+<div class="section">
+  <div class="thought">i just want the page to move slowly</div>
+</div>
 
-  <div class="moon-line">☾</div>
+<div class="section">
+  <div class="thought">like my thoughts do</div>
+</div>
 
-  <a href="read.html" class="enter">enter</a>
-</main>
+<div class="section">
+  <div class="thought">keep scrolling 🌙</div>
+</div>
+
+<!-- floating stars -->
+<div class="star" style="top:20%; left:10%">✦</div>
+<div class="star" style="top:60%; left:80%">✧</div>
+<div class="star" style="top:40%; left:50%">✦</div>
+
+<script>
+/* ---------- CURSOR ---------- */
+const cursor = document.querySelector('.cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+
+/* ---------- SCROLL REVEAL ---------- */
+const thoughts = document.querySelectorAll('.thought');
+
+window.addEventListener('scroll', () => {
+  thoughts.forEach(thought => {
+    const rect = thought.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 100) {
+      thought.classList.add('show');
+    }
+  });
+});
+</script>
 
 </body>
 </html>
